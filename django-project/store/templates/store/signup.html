@@ -1,0 +1,193 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | HOUSE OF ELEGANCE</title>
+
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+
+    <style>
+        /* Signup page background */
+        body.signup-page {
+            min-height: 100vh;
+            background: #fffafa;
+            position: relative;
+        }
+
+        /* Header */
+        body.signup-page .main-header {
+            width: 100%;
+        }
+
+        /* Signup box - exact screen center */
+        body.signup-page .auth-container {
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+
+            width: 420px !important;
+            max-width: calc(100% - 30px) !important;
+
+            margin: 0 !important;
+            padding: 35px !important;
+
+            background: #ffffff;
+            border: 1px solid #f0dce2;
+            border-radius: 14px;
+
+            box-shadow: 0 12px 35px rgba(90, 30, 50, 0.10);
+
+            text-align: center;
+            float: none !important;
+        }
+
+        /* Heading */
+        body.signup-page .auth-container h1 {
+            font-family: Georgia, serif;
+            font-size: 30px;
+            color: #632139;
+            margin-bottom: 10px;
+        }
+
+        body.signup-page .auth-container > p {
+            color: #88747a;
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+
+        /* Form */
+        body.signup-page .auth-container form {
+            text-align: left;
+        }
+
+        body.signup-page .auth-container form p {
+            margin-bottom: 15px;
+        }
+
+        body.signup-page .auth-container form label {
+            display: block;
+            margin-bottom: 7px;
+            color: #572336;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        body.signup-page .auth-container form input {
+            display: block;
+            width: 100%;
+            height: 43px;
+            padding: 10px 13px;
+            border: 1px solid #ead5dc;
+            border-radius: 6px;
+            background: #fffafa;
+            font-size: 14px;
+            outline: none;
+        }
+
+        body.signup-page .auth-container form input:focus {
+            border-color: #852747;
+            box-shadow: 0 0 0 3px rgba(133, 39, 71, 0.10);
+        }
+
+        body.signup-page .auth-container .add-btn {
+            margin-top: 8px;
+            height: 45px;
+            border-radius: 6px;
+        }
+
+        body.signup-page .auth-container > p:last-child {
+            margin-top: 20px;
+            margin-bottom: 0;
+        }
+
+        body.signup-page .auth-container a {
+            color: #852747;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        body.signup-page .form-errors {
+            color: #b42345;
+            background: #fff0f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        /* Mobile layout */
+        @media (max-width: 500px) {
+            body.signup-page .auth-container {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                transform: none !important;
+                margin: 35px auto !important;
+                padding: 25px 20px !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="signup-page">
+
+<header class="main-header">
+    <div class="logo">HOUSE <span>OF ELEGANCE</span></div>
+    <a href="/">Home</a>
+</header>
+
+<div class="auth-container">
+
+    <h1>Create Account</h1>
+    <p>Join HOUSE OF ELEGANCE</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <div class="form-errors">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+
+        <p>
+            <label>Username</label>
+            {{ form.username }}
+        </p>
+
+        <p>
+            <label>Email Address</label>
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+        </p>
+
+        <p>
+            <label>Password</label>
+            {{ form.password1 }}
+        </p>
+
+        <p>
+            <label>Confirm Password</label>
+            {{ form.password2 }}
+        </p>
+
+        <button type="submit" class="add-btn">SIGN UP</button>
+    </form>
+
+    <p>
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+    </p>
+
+</div>
+
+</body>
+</html>

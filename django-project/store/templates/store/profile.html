@@ -1,0 +1,82 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | HOUSE OF ELEGANCE</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="logo">HOUSE <span>OF ELEGANCE</span></div>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="{% url 'my_orders' %}">📦 My Orders</a>
+        <a href="{% url 'wishlist' %}">♡ Wishlist</a>
+        <a href="{% url 'cart' %}">🛍 My Bag</a>
+    </div>
+</header>
+
+<section class="collection">
+
+    <div class="success-container">
+
+        <h2>MY PROFILE</h2>
+
+        <p>Welcome to HOUSE OF ELEGANCE!</p>
+
+        <div class="order-details">
+
+            <h3>Account Information</h3>
+
+            <p><strong>Username:</strong> {{ user.username }}</p>
+
+            <p><strong>Email Address:</strong>
+                {{ user.email|default:"Not provided" }}
+            </p>
+
+            <p><strong>Account Created:</strong>
+                {{ user.date_joined|date:"d M Y" }}
+            </p>
+
+        </div>
+
+        <div style="margin-top: 25px; display: flex; flex-wrap: wrap; gap: 12px;">
+            <a href="{% url 'edit_profile' %}" class="continue-shopping-btn">
+             ✏️ EDIT PROFILE
+            </a>
+
+            <a href="{% url 'my_orders' %}" class="continue-shopping-btn">
+                MY ORDERS
+            </a>
+
+            <a href="{% url 'wishlist' %}" class="continue-shopping-btn">
+                MY WISHLIST
+            </a>
+
+            <a href="{% url 'cart' %}" class="continue-shopping-btn">
+                MY SHOPPING BAG
+            </a>
+
+            <a href="{% url 'logout' %}" class="continue-shopping-btn">
+                LOGOUT
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+    <h2>HOUSE OF ELEGANCE</h2>
+    <p>Where Elegance Meets Fashion</p>
+</footer>
+
+</body>
+</html>

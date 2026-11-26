@@ -1,0 +1,412 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOUSE OF ELEGANCE | Fashion Store</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+
+    <style>
+        .discount-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #9b2948;
+            color: white;
+            padding: 7px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .product-image {
+            position: relative;
+        }
+
+        .product-prices {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .selling-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .original-price {
+            font-size: 14px;
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .discount-text {
+            color: #198754;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* MEESHO STYLE WISHLIST HEART */
+
+        .wishlist-form {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 5;
+            margin: 0;
+        }
+
+        .wishlist-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: white;
+            color: #888;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .wishlist-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .wishlist-btn.is-wishlisted {
+            color: #e11d48;
+        }
+
+        .wishlist-btn:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        .wishlist-btn.heart-pop {
+            animation: heartPop 0.3s ease;
+        }
+
+        @keyframes heartPop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP HEADER -->
+<header class="main-header">
+    <div class="logo">
+        HOUSE <span>OF ELEGANCE</span>
+    </div>
+
+    <form class="search-box" method="GET" action="/">
+        <input
+            type="text"
+            name="q"
+            placeholder="Search for sarees, kurtis, dresses..."
+            value="{{ search_query }}"
+        >
+        <button type="submit">⌕</button>
+    </form>
+
+    <div class="header-actions">
+        {% if user.is_authenticated %}
+            <a href="#">👤 {{ user.username }}</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">👤 Login</a>
+            <a href="{% url 'signup' %}">Sign Up</a>
+        {% endif %}
+
+        <a href="{% url 'wishlist' %}">♡ Wishlist</a>
+        <a href="{% url 'cart' %}">🛍 Bag</a>
+        <a href="{% url 'my_orders' %}">📦 My Orders</a>
+        <a href="{% url 'profile' %}">👤 My Profile</a>
+    </div>
+</header>
+
+
+<!-- CATEGORY NAVIGATION -->
+<nav class="category-navbar">
+    <a href="/">HOME</a>
+    <a href="#categories">DRESSES</a>
+    <a href="{% url 'sarees' %}">SAREES</a>
+    <a href="#categories">KURTIS</a>
+    <a href="#categories">TOPS</a>
+    <a href="#categories">WESTERN WEAR</a>
+</nav>
+
+
+<!-- OFFER BANNER -->
+<section class="offer-banner">
+    <div>
+        <p>THE NEW SEASON IS HERE</p>
+        <h1>Fashion That<br>Speaks Elegance</h1>
+        <span>
+            Discover your perfect style with our latest collection.
+        </span>
+        <br><br>
+        <a href="#collection">SHOP NOW →</a>
+    </div>
+</section>
+
+
+<!-- CATEGORIES -->
+<section class="categories" id="categories">
+    <h2>SHOP BY CATEGORY</h2>
+    <p>Explore styles made for you</p>
+
+    <div class="category-list">
+        <a href="#collection">Dresses</a>
+        <a href="{% url 'sarees' %}">Sarees</a>
+        <a href="{% url 'kurtis' %}">Kurtis</a>
+        <a href="#collection">Tops</a>
+        <a href="#collection">Western Wear</a>
+    </div>
+</section>
+
+
+<!-- PRODUCTS -->
+<section class="collection" id="collection">
+
+    <div class="section-heading">
+        <div>
+            <h2>OUR LATEST COLLECTION</h2>
+            <p>
+                {% if search_query %}
+                    Search results for "{{ search_query }}"
+                {% else %}
+                    Find something beautiful for every occasion.
+                {% endif %}
+            </p>
+        </div>
+
+        <a href="/" class="view-all">VIEW ALL →</a>
+    </div>
+
+
+    <div class="product-grid">
+
+        {% for product in products %}
+
+        <div class="product-card">
+
+            <div class="product-image">
+
+                {% if product.discount_percentage > 0 %}
+                    <span class="discount-badge">
+                        {{ product.discount_percentage }}% OFF
+                    </span>
+                {% endif %}
+
+                <a href="{% url 'product_detail' product.id %}">
+                    {% if product.image %}
+                        <img
+                            src="{{ product.image.url }}"
+                            alt="{{ product.name }}"
+                        >
+                    {% else %}
+                        <div class="no-image">
+                            Image coming soon
+                        </div>
+                    {% endif %}
+                </a>
+
+                <!-- MEESHO STYLE WISHLIST -->
+
+                <form
+                    class="wishlist-form"
+                    action="{% url 'add_to_wishlist' product.id %}"
+                    method="POST"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        class="wishlist-btn {% if product.id in wishlist_product_ids %}is-wishlisted{% endif %}"
+                        type="submit"
+                        title="Add to Wishlist"
+                        aria-label="Toggle wishlist"
+                        aria-pressed="{% if product.id in wishlist_product_ids %}true{% else %}false{% endif %}"
+                    >
+                        {% if product.id in wishlist_product_ids %}
+                            ♥
+                        {% else %}
+                            ♡
+                        {% endif %}
+                    </button>
+                </form>
+
+            </div>
+
+
+            <!-- PRODUCT INFORMATION -->
+            <div class="product-info">
+
+                <h3>
+                    <a href="{% url 'product_detail' product.id %}">
+                        {{ product.name }}
+                    </a>
+                </h3>
+
+                <p>{{ product.category }}</p>
+
+
+                <!-- AUTOMATIC DISCOUNT -->
+                <div class="product-prices">
+
+                    <span class="selling-price">
+                        ₹{{ product.discounted_price }}
+                    </span>
+
+                    {% if product.discount_percentage > 0 %}
+
+                        <span class="original-price">
+                            ₹{{ product.price }}
+                        </span>
+
+                        <span class="discount-text">
+                            {{ product.discount_percentage }}% OFF
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- ADD TO BAG -->
+                <form
+                    action="{% url 'add_cart' product.id %}"
+                    method="POST"
+                >
+                    {% csrf_token %}
+                    <button class="add-btn" type="submit">
+                        ADD TO BAG
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p>No products found. Try another search.</p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+    <h2>HOUSE OF ELEGANCE</h2>
+    <p>Where Elegance Meets Fashion</p>
+    <p>Discover. Dress. Impress.</p>
+</footer>
+
+
+<!-- WISHLIST AJAX JAVASCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.wishlist-form').forEach(function(form) {
+
+        form.addEventListener('submit', async function(event) {
+
+            event.preventDefault();
+
+            const button = form.querySelector('.wishlist-btn');
+
+            if (button.disabled) {
+                return;
+            }
+
+            button.disabled = true;
+
+            try {
+
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                // If the customer is not logged in, open login page.
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    throw new Error('Wishlist update failed');
+                }
+
+                if (data.added) {
+
+                    // ADD TO WISHLIST
+                    button.innerHTML = '♥';
+                    button.classList.add('is-wishlisted');
+                    button.title = 'Remove from Wishlist';
+                    button.setAttribute('aria-pressed', 'true');
+
+                } else {
+
+                    // REMOVE FROM WISHLIST
+                    button.innerHTML = '♡';
+                    button.classList.remove('is-wishlisted');
+                    button.title = 'Add to Wishlist';
+                    button.setAttribute('aria-pressed', 'false');
+
+                }
+
+                // Heart animation
+                button.classList.remove('heart-pop');
+
+                void button.offsetWidth;
+
+                button.classList.add('heart-pop');
+
+            } catch (error) {
+
+                alert('Unable to update wishlist. Please try again.');
+
+            } finally {
+
+                button.disabled = false;
+
+            }
+
+        });
+
+    });
+
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | HOUSE OF ELEGANCE</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="logo">HOUSE <span>OF ELEGANCE</span></div>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="{% url 'profile' %}">👤 My Profile</a>
+    </div>
+</header>
+
+<section class="collection">
+
+    <div class="success-container">
+
+        <h2>EDIT MY PROFILE</h2>
+        <p>Update your personal information.</p>
+
+        <div class="order-details">
+
+            <form method="POST" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+
+                <label>First Name</label>
+                <input
+                    type="text"
+                    name="first_name"
+                    value="{{ user.first_name }}"
+                    placeholder="Enter your first name"
+                >
+
+                <label>Last Name</label>
+                <input
+                    type="text"
+                    name="last_name"
+                    value="{{ user.last_name }}"
+                    placeholder="Enter your last name"
+                >
+
+                <label>Email Address</label>
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ user.email }}"
+                    placeholder="Enter your email"
+                    required
+                >
+
+                <button type="submit" class="add-btn">
+                    SAVE CHANGES
+                </button>
+
+            </form>
+
+        </div>
+
+        <br>
+
+        <a href="{% url 'profile' %}" class="continue-shopping-btn">
+            BACK TO PROFILE
+        </a>
+
+    </div>
+
+</section>
+
+<footer>
+    <h2>HOUSE OF ELEGANCE</h2>
+    <p>Where Elegance Meets Fashion</p>
+</footer>
+
+</body>
+</html>

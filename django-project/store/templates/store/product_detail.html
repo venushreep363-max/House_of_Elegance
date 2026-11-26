@@ -1,0 +1,535 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} | HOUSE OF ELEGANCE</title>
+
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+
+    <style>
+        body {
+            background: #fffafa;
+            color: #30232a;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .product-details {
+            max-width: 1150px;
+            margin: 55px auto;
+            padding: 35px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 55px;
+            align-items: center;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(70, 20, 40, 0.08);
+        }
+
+        .detail-image {
+            width: 100%;
+            max-width: 420px;
+            height: 430px;
+            margin: auto;
+            background: #fceff1;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .detail-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .detail-info {
+            padding: 20px;
+        }
+
+        .detail-category {
+            color: #963d59;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 13px;
+        }
+
+        .detail-info h1 {
+            font-size: 34px;
+            margin: 15px 0;
+            color: #542538;
+        }
+
+        .detail-info h2 {
+            color: #963d59;
+            font-size: 27px;
+            margin-bottom: 20px;
+        }
+
+        .detail-description {
+            line-height: 1.8;
+            color: #66535b;
+            margin-bottom: 25px;
+        }
+
+        .availability {
+            margin: 20px 0;
+            color: #5b7650;
+        }
+
+        .variant-heading {
+            margin: 22px 0 12px;
+            font-weight: 600;
+            color: #542538;
+        }
+
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .color-option {
+            padding: 9px 16px;
+            border: 1px solid #d8b8c3;
+            background: white;
+            color: #542538;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .color-option.active {
+            border: 2px solid #762d49;
+            background: #fceff1;
+            font-weight: bold;
+        }
+
+        .add-btn {
+            background: #762d49;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            cursor: pointer;
+            font-size: 14px;
+            letter-spacing: 2px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #a34c68;
+        }
+
+        .add-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 25px;
+            color: #762d49;
+            text-decoration: none;
+        }
+
+        .continue-shopping:hover {
+            text-decoration: underline;
+        }
+
+        /* CUSTOMER REVIEWS */
+
+        .reviews-section {
+            max-width: 1050px;
+            margin: 50px auto;
+            padding: 35px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(70, 20, 40, 0.08);
+        }
+
+        .reviews-section h2 {
+            color: #542538;
+            font-size: 27px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #f3dce3;
+            padding-bottom: 15px;
+        }
+
+        .rating-summary {
+            background: #fff5f7;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .rating-summary h3 {
+            color: #963d59;
+            font-size: 30px;
+            margin: 0 0 8px;
+        }
+
+        .rating-summary p {
+            color: #66535b;
+            margin: 0;
+        }
+
+        .review-card {
+            padding: 20px 5px;
+            border-bottom: 1px solid #f0dfe5;
+        }
+
+        .review-card h4 {
+            color: #542538;
+            margin: 0 0 10px;
+            font-size: 17px;
+        }
+
+        .review-stars {
+            color: #e5a52b;
+            font-size: 20px;
+            margin: 5px 0 12px;
+        }
+
+        .review-comment {
+            color: #66535b;
+            line-height: 1.7;
+        }
+
+        .review-date {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .no-reviews {
+            color: #806b73;
+            padding: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .product-details {
+                grid-template-columns: 1fr;
+                margin: 20px;
+                padding: 15px;
+                gap: 20px;
+            }
+
+            .detail-image {
+                height: 400px;
+            }
+
+            .detail-info h1 {
+                font-size: 26px;
+            }
+
+            .reviews-section {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+
+
+
+/* EXTRA COMPACT CUSTOMER REVIEWS */
+
+.reviews-section {
+    width: 90% !important;
+    max-width: 480px !important;
+    margin: 15px auto !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+}
+
+.reviews-section h2 {
+    font-size: 16px !important;
+    margin-bottom: 8px !important;
+}
+
+.reviews-section .rating-summary {
+    padding: 6px !important;
+    margin-bottom: 7px !important;
+}
+
+.reviews-section .rating-summary h3 {
+    font-size: 14px !important;
+    margin: 0 0 3px !important;
+}
+
+.reviews-section .rating-summary p {
+    font-size: 10px !important;
+}
+
+.reviews-section .review-card {
+    padding: 6px 8px !important;
+    margin-bottom: 5px !important;
+}
+
+.reviews-section .review-card h4 {
+    font-size: 11px !important;
+    margin-bottom: 3px !important;
+}
+
+.reviews-section .review-card .review-stars {
+    font-size: 10px !important;
+    margin: 2px 0 !important;
+}
+
+.reviews-section .review-card p {
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+    margin: 3px 0 !important;
+}
+
+.reviews-section .review-card small {
+    font-size: 9px !important;
+}
+
+@media (max-width: 600px) {
+    .reviews-section {
+        width: 95% !important;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="logo">HOUSE <span>OF ELEGANCE</span></div>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="{% url 'cart' %}">🛍 Bag</a>
+    </div>
+</header>
+
+<section class="product-details">
+
+    {% with first_variant=product.variants.all|first %}
+    <div class="detail-image">
+        {% if first_variant and first_variant.image %}
+            <img id="mainProductImage"
+                 src="{{ first_variant.image.url }}"
+                 alt="{{ product.name }}">
+        {% elif product.image %}
+            <img id="mainProductImage"
+                 src="{{ product.image.url }}"
+                 alt="{{ product.name }}">
+        {% else %}
+            <p>Image coming soon</p>
+        {% endif %}
+    </div>
+
+    <div class="detail-info">
+
+        <p class="detail-category">{{ product.category }}</p>
+
+        <h1>{{ product.name }}</h1>
+
+        <h2>₹{{ product.price }}</h2>
+
+        <p class="detail-description">
+            {{ product.description|default:"Beautiful fashion, designed for elegance and comfort." }}
+        </p>
+
+        {% if product.variants.all %}
+            <p class="variant-heading">Select Colour:</p>
+
+            <div class="color-options">
+                {% for variant in product.variants.all %}
+                    {% if variant.color %}
+                        <button
+                            type="button"
+                            class="color-option {% if forloop.first %}active{% endif %}"
+                            data-variant-id="{{ variant.id }}"
+                            data-image="{% if variant.image %}{{ variant.image.url }}{% endif %}"
+                            data-stock="{{ variant.stock }}">
+                            {{ variant.color }}
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <p class="availability" id="availabilityText">
+            <strong>Availability:</strong>
+            {% if first_variant %}
+                {% if first_variant.stock > 0 %}
+                    In Stock
+                {% else %}
+                    Out of Stock
+                {% endif %}
+            {% elif product.stock > 0 %}
+                In Stock
+            {% else %}
+                Out of Stock
+            {% endif %}
+        </p>
+
+        {% if product.stock > 0 %}
+            <form action="{% url 'add_cart' product.id %}" method="POST">
+                {% csrf_token %}
+
+                {% if first_variant %}
+                    <input type="hidden"
+                           name="variant_id"
+                           id="selectedVariant"
+                           value="{{ first_variant.id }}">
+                {% endif %}
+
+                <button class="add-btn" type="submit" id="addButton">
+                    ADD TO BAG
+                </button>
+            </form>
+        {% else %}
+            <p>Currently unavailable.</p>
+        {% endif %}
+
+        <a class="continue-shopping" href="/">
+            ← CONTINUE SHOPPING
+        </a>
+
+    </div>
+    {% endwith %}
+
+</section>
+
+<!-- CUSTOMER REVIEWS SECTION -->
+
+<section class="reviews-section">
+
+    <h2>Customer Reviews & Ratings</h2>
+
+    <div class="rating-summary">
+        <h3>{{ average_rating }} / 5 ⭐</h3>
+        <p>{{ review_count }} customer reviews</p>
+    </div>
+
+    {% if reviews %}
+
+        {% for review in reviews %}
+
+            <div class="review-card">
+
+                <h4>{{ review.customer.username }}</h4>
+
+                <p class="review-stars">
+                    {% for star in "12345" %}
+                        {% if forloop.counter <= review.rating %}
+                            ⭐
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                </p>
+
+                <p class="review-comment">
+                    {{ review.comment }}
+                </p>
+
+                <small class="review-date">
+                    {{ review.created_at|date:"d M Y" }}
+                </small>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p class="no-reviews">
+            No reviews yet. Be the first to review this product!
+        </p>
+
+    {% endif %}
+    <h3>Write a Review</h3>
+
+{% if user.is_authenticated %}
+<form method="POST" action="{% url 'submit_review' product.id %}">
+    {% csrf_token %}
+
+    <label>Rating:</label>
+    <select name="rating" required>
+        <option value="5">⭐⭐⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="1">⭐</option>
+    </select>
+
+    <br><br>
+
+    <textarea name="comment"
+              placeholder="Write your review..."
+              required></textarea>
+
+    <br><br>
+
+    <button type="submit" class="add-btn">SUBMIT REVIEW</button>
+</form>
+{% else %}
+<p>Please log in to write a review.</p>
+{% endif %}
+
+</section>
+
+<footer>
+    <h2>HOUSE OF ELEGANCE</h2>
+    <p>Where Elegance Meets Fashion</p>
+</footer>
+
+<script>
+    const colorOptions = document.querySelectorAll(".color-option");
+    const mainImage = document.getElementById("mainProductImage");
+    const selectedVariant = document.getElementById("selectedVariant");
+    const availabilityText = document.getElementById("availabilityText");
+    const addButton = document.getElementById("addButton");
+
+    colorOptions.forEach(option => {
+        option.addEventListener("click", function () {
+
+            colorOptions.forEach(button => {
+                button.classList.remove("active");
+            });
+
+            this.classList.add("active");
+
+            const imageUrl = this.dataset.image;
+            const variantId = this.dataset.variantId;
+            const stock = Number(this.dataset.stock);
+
+            if (imageUrl && mainImage) {
+                mainImage.src = imageUrl;
+            }
+
+            if (selectedVariant) {
+                selectedVariant.value = variantId;
+            }
+
+            if (stock > 0) {
+                availabilityText.innerHTML =
+                    "<strong>Availability:</strong> In Stock";
+
+                if (addButton) {
+                    addButton.disabled = false;
+                    addButton.textContent = "ADD TO BAG";
+                }
+
+            } else {
+                availabilityText.innerHTML =
+                    "<strong>Availability:</strong> Out of Stock";
+
+                if (addButton) {
+                    addButton.disabled = true;
+                    addButton.textContent = "OUT OF STOCK";
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

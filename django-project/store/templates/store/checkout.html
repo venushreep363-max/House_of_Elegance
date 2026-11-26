@@ -1,0 +1,661 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout | HOUSE OF ELEGANCE</title>
+
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+
+    <style>
+        .checkout-container {
+            max-width: 650px;
+            margin: 30px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .checkout-container label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        .checkout-container input:not([type="radio"]),
+        .checkout-container textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 7px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .coupon-box {
+            margin: 25px 0;
+            padding: 20px;
+            background: #fff5f8;
+            border: 1px solid #f1c6d5;
+            border-radius: 10px;
+        }
+
+        .coupon-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .coupon-input input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .coupon-btn {
+            padding: 12px 20px;
+            background: #b76e79;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .remove-coupon {
+            margin-top: 10px;
+            padding: 8px 14px;
+            background: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* AVAILABLE COUPONS */
+
+        .available-coupons {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid #efd5de;
+        }
+
+        .available-coupons h4 {
+            margin-bottom: 15px;
+            color: #743e4c;
+        }
+
+        .coupon-card {
+            background: white;
+            border: 1px dashed #c88998;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .coupon-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coupon-code {
+            font-size: 16px;
+            font-weight: bold;
+            color: #a34f65;
+            letter-spacing: 1px;
+        }
+
+        .coupon-discount {
+            background: #fce6ed;
+            color: #a34f65;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .coupon-minimum {
+            color: #777;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .copy-coupon {
+            margin-top: 10px;
+            padding: 7px 13px;
+            background: #b76e79;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .copy-coupon:hover,
+        .coupon-btn:hover {
+            background: #965461;
+        }
+
+        .no-coupons {
+            color: #777;
+            font-size: 13px;
+        }
+
+        /* PRICE SUMMARY */
+
+        .price-summary {
+            margin: 25px 0;
+            padding: 20px;
+            background: #fff8fa;
+            border: 1px solid #f1dce3;
+            border-radius: 8px;
+        }
+
+        .price-summary h3 {
+            margin-bottom: 20px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 14px 0;
+        }
+
+        .old-price {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .discount-text {
+            color: #218838;
+            font-weight: 600;
+        }
+
+        .subtotal-row {
+            border-top: 1px solid #eadde1;
+            padding-top: 14px;
+            font-weight: 600;
+        }
+
+        .final-price {
+            font-size: 21px;
+            font-weight: bold;
+            color: #b76e79;
+            border-top: 1px solid #ddd;
+            padding-top: 18px;
+            margin-top: 18px;
+        }
+
+        .coupon-message {
+            color: #c0392b;
+            margin-top: 12px;
+        }
+
+        .success-message {
+            color: #218838;
+            margin-top: 10px;
+        }
+
+        /* PAYMENT OPTIONS */
+
+        .payment-section {
+            margin: 28px 0 22px;
+        }
+
+        .payment-section h3 {
+            margin-bottom: 15px;
+        }
+
+        .payment-option {
+            display: flex !important;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            margin: 10px 0 !important;
+            border: 1px solid #e5cbd3;
+            border-radius: 8px;
+            background: #fffafa;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: #b76e79;
+            background: #fff5f8;
+        }
+
+        .payment-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            accent-color: #b76e79;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .payment-option span {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .demo-note {
+            margin-top: 12px;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .checkout-note {
+            margin-top: 15px;
+            color: #777;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @media (max-width: 500px) {
+            .checkout-container {
+                margin: 20px 10px;
+                padding: 20px;
+            }
+
+            .coupon-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .coupon-btn {
+                width: 100%;
+            }
+
+            .final-price {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header class="main-header">
+
+    <div class="logo">
+        HOUSE <span>OF ELEGANCE</span>
+    </div>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="{% url 'cart' %}">🛍 My Bag</a>
+    </div>
+
+</header>
+
+
+<section class="collection">
+
+    <h2>SECURE CHECKOUT</h2>
+
+    <p>Complete your details to place your order.</p>
+
+    <div class="checkout-container">
+
+        <!-- COUPON SECTION -->
+
+        <div class="coupon-box">
+
+            <h3>🎁 Apply Coupon Code</h3>
+
+            {% if coupon %}
+
+                <p class="success-message">
+                    ✓ Coupon
+                    <strong>{{ coupon.code }}</strong>
+                    applied successfully!
+                </p>
+
+                <form method="POST" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="remove_coupon"
+                    >
+
+                    <button type="submit" class="remove-coupon">
+                        Remove Coupon
+                    </button>
+                </form>
+
+            {% else %}
+
+                <form method="POST" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="apply_coupon"
+                    >
+
+                    <div class="coupon-input">
+
+                        <input
+                            type="text"
+                            name="coupon_code"
+                            placeholder="Enter coupon code"
+                            required
+                        >
+
+                        <button type="submit" class="coupon-btn">
+                            APPLY
+                        </button>
+
+                    </div>
+
+                </form>
+
+            {% endif %}
+
+            {% if error %}
+                <p class="coupon-message">
+                    {{ error }}
+                </p>
+            {% endif %}
+
+
+            <!-- AVAILABLE COUPONS -->
+
+            <div class="available-coupons">
+
+                <h4>✨ Available Offers for You</h4>
+
+                {% for offer in available_coupons %}
+
+                    <div class="coupon-card">
+
+                        <div class="coupon-card-top">
+
+                            <span class="coupon-code">
+                                {{ offer.code }}
+                            </span>
+
+                            <span class="coupon-discount">
+                                {{ offer.discount }}% OFF
+                            </span>
+
+                        </div>
+
+                        <p class="coupon-minimum">
+                            Minimum order:
+                            ₹{{ offer.min_order_amount|floatformat:2 }}
+                        </p>
+
+                        {% if total >= offer.min_order_amount %}
+
+                            <p class="success-message">
+                                ✓ You are eligible for this coupon!
+                            </p>
+
+                        {% else %}
+
+                            <p class="coupon-minimum">
+                                Minimum order amount:
+                                ₹{{ offer.min_order_amount|floatformat:2 }}
+                            </p>
+
+                        {% endif %}
+
+                        <button
+                            type="button"
+                            class="copy-coupon"
+                            onclick="copyCoupon('{{ offer.code|escapejs }}', this)"
+                        >
+                            Copy Code
+                        </button>
+
+                    </div>
+
+                {% empty %}
+
+                    <p class="no-coupons">
+                        No active coupons available at the moment.
+                        Please check again later!
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- ORDER PRICE SUMMARY -->
+
+        <div class="price-summary">
+
+            <h3>🛍 Order Summary</h3>
+
+            <div class="price-row">
+
+                <span>Original Price</span>
+
+                <span class="old-price">
+                    ₹{{ original_total|floatformat:2 }}
+                </span>
+
+            </div>
+
+            <div class="price-row">
+
+                <span>Store Discount (30%)</span>
+
+                <span class="discount-text">
+                    - ₹{{ product_discount|floatformat:2 }}
+                </span>
+
+            </div>
+
+            <div class="price-row subtotal-row">
+
+                <span>Subtotal After Discount</span>
+
+                <span>
+                    ₹{{ total|floatformat:2 }}
+                </span>
+
+            </div>
+
+            <div class="price-row">
+
+                <span>Coupon Discount</span>
+
+                <span class="discount-text">
+                    - ₹{{ discount|floatformat:2 }}
+                </span>
+
+            </div>
+
+            {% if coupon %}
+
+                <p class="success-message">
+                    ✓ Coupon {{ coupon.code }} is active.
+                </p>
+
+            {% endif %}
+
+            <div class="price-row final-price">
+
+                <span>Final Total</span>
+
+                <span>
+                    ₹{{ final_total|floatformat:2 }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- DELIVERY INFORMATION -->
+
+        <form method="POST" action="{% url 'checkout' %}">
+
+            {% csrf_token %}
+
+            <h3>Delivery Information</h3>
+
+            <label>Full Name</label>
+
+            <input
+                type="text"
+                name="customer_name"
+                placeholder="Enter your full name"
+                required
+            >
+
+            <label>Email Address</label>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+            <label>Phone Number</label>
+
+            <input
+                type="tel"
+                name="phone"
+                placeholder="Enter your phone number"
+                pattern="[0-9]{10}"
+                maxlength="10"
+                required
+            >
+
+            <label>Delivery Address</label>
+
+            <textarea
+                name="address"
+                placeholder="Enter your complete delivery address"
+                rows="5"
+                required
+            ></textarea>
+
+
+            <!-- PAYMENT OPTIONS -->
+
+            <div class="payment-section">
+
+                <h3>💳 Select Payment Method</h3>
+
+                <label class="payment-option">
+
+                    <input
+                        type="radio"
+                        name="payment_method"
+                        value="COD"
+                        checked
+                    >
+
+                    <span>💵 Cash on Delivery</span>
+
+                </label>
+
+                <label class="payment-option">
+
+                    <input
+                        type="radio"
+                        name="payment_method"
+                        value="UPI"
+                    >
+
+                    <span>📱 UPI (Google Pay, PhonePe, Paytm)</span>
+
+                </label>
+
+                <label class="payment-option">
+
+                    <input
+                        type="radio"
+                        name="payment_method"
+                        value="CARD"
+                    >
+
+                    <span>💳 Credit / Debit Card</span>
+
+                </label>
+
+                <p class="demo-note">
+                    Note: Payment methods are displayed for demonstration.
+                    Online payment processing is not enabled.
+                </p>
+
+            </div>
+
+
+            <button type="submit" class="add-btn">
+                PLACE ORDER
+            </button>
+
+            <p class="checkout-note">
+                🔒 Your order details will be processed securely.
+            </p>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <h2>HOUSE OF ELEGANCE</h2>
+
+    <p>Where Elegance Meets Fashion</p>
+
+</footer>
+
+
+<!-- COPY COUPON SCRIPT -->
+
+<script>
+
+function copyCoupon(code, button) {
+
+    navigator.clipboard.writeText(code)
+        .then(function() {
+
+            button.textContent = "Copied!";
+
+            setTimeout(function() {
+                button.textContent = "Copy Code";
+            }, 2000);
+
+        })
+        .catch(function() {
+
+            button.textContent = "Copy failed";
+
+            setTimeout(function() {
+                button.textContent = "Copy Code";
+            }, 2000);
+
+        });
+
+}
+
+</script>
+
+</body>
+</html>

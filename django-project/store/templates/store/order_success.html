@@ -1,0 +1,337 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Order Successful | HOUSE OF ELEGANCE</title>
+
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+
+    <style>
+        body {
+            background: #fffafa;
+        }
+
+        .success-section {
+            padding: 45px 15px;
+            background: #fffafa;
+        }
+
+        .success-container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 35px;
+            background: #fff;
+            border: 1px solid #f0dce2;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(90, 30, 50, 0.08);
+        }
+
+        .success-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .success-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: #e8f5e9;
+            color: #27833c;
+            font-size: 38px;
+            line-height: 65px;
+            font-weight: bold;
+        }
+
+        .success-heading h1 {
+            font-family: Georgia, serif;
+            color: #632139;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .success-heading p {
+            color: #88747a;
+            margin: 7px 0;
+        }
+
+        .order-details,
+        .ordered-items {
+            margin-top: 25px;
+            padding: 22px;
+            background: #fffafa;
+            border: 1px solid #f0dce2;
+            border-radius: 10px;
+        }
+
+        .order-details h3,
+        .ordered-items h3 {
+            font-family: Georgia, serif;
+            color: #632139;
+            font-size: 21px;
+            margin-bottom: 18px;
+        }
+
+        .order-details p {
+            color: #59444c;
+            font-size: 14px;
+            margin-bottom: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .order-details strong {
+            color: #632139;
+        }
+
+        .order-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 18px 0;
+            border-bottom: 1px solid #eadde0;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item img {
+            width: 110px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #f0dce2;
+        }
+
+        .order-item-details {
+            flex: 1;
+        }
+
+        .order-item h4 {
+            color: #632139;
+            font-size: 16px;
+            margin-bottom: 9px;
+        }
+
+        .order-item p {
+            color: #88747a;
+            font-size: 13px;
+            margin: 6px 0;
+        }
+
+        .order-total {
+            text-align: right;
+            color: #852747;
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .success-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .success-actions .continue-shopping-btn {
+            padding: 12px 25px;
+            font-size: 13px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .success-container {
+                padding: 20px 15px;
+            }
+
+            .success-heading h1 {
+                font-size: 23px;
+            }
+
+            .order-item {
+                gap: 12px;
+            }
+
+            .order-item img {
+                width: 85px;
+                height: 110px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="logo">
+        HOUSE <span>OF ELEGANCE</span>
+    </div>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="{% url 'wishlist' %}">♡ Wishlist</a>
+    </div>
+</header>
+
+<section class="success-section">
+
+    <div class="success-container">
+
+        <!-- SUCCESS MESSAGE -->
+
+        <div class="success-heading">
+
+            <div class="success-icon">✓</div>
+
+            <h1>ORDER PLACED SUCCESSFULLY!</h1>
+
+            <p>Thank you, {{ order.customer_name }}!</p>
+
+            <p>Your order has been received by HOUSE OF ELEGANCE.</p>
+
+            <p>We appreciate your shopping with us.</p>
+
+        </div>
+
+
+        <!-- CUSTOMER AND ORDER DETAILS -->
+
+        <div class="order-details">
+
+            <h3>Customer & Order Details</h3>
+
+            <p>
+                <strong>Order Number:</strong>
+                #{{ order.id }}
+            </p>
+
+            <p>
+                <strong>Customer Name:</strong>
+                {{ order.customer_name }}
+            </p>
+
+            <p>
+                <strong>Customer Email:</strong>
+                {{ order.email }}
+            </p>
+
+            <p>
+                <strong>Phone Number:</strong>
+                {{ order.phone }}
+            </p>
+
+            <p>
+                <strong>Delivery Address:</strong>
+                {{ order.address }}
+            </p>
+
+            <p>
+                <strong>Order Status:</strong>
+                {{ order.status }}
+            </p>
+
+            <p>
+                <strong>Order Date:</strong>
+                {{ order.created_at|date:"d M Y, h:i A" }}
+            </p>
+
+        </div>
+
+
+        <!-- PURCHASED PRODUCTS -->
+
+        <div class="ordered-items">
+
+            <h3>Your Purchased Items</h3>
+
+            {% for item in order.items.all %}
+
+                <div class="order-item">
+
+                    {% if item.product.image %}
+                        <img
+                            src="{{ item.product.image.url }}"
+                            alt="{{ item.product.name }}"
+                        >
+                    {% endif %}
+
+                    <div class="order-item-details">
+
+                        <h4>{{ item.product.name }}</h4>
+
+                        {% if item.variant %}
+
+                            {% if item.variant.color %}
+                                <p>
+                                    <strong>Colour:</strong>
+                                    {{ item.variant.color }}
+                                </p>
+                            {% endif %}
+
+                            {% if item.variant.size %}
+                                <p>
+                                    <strong>Size:</strong>
+                                    {{ item.variant.size }}
+                                </p>
+                            {% endif %}
+
+                        {% endif %}
+
+                        <p>
+                            <strong>Quantity:</strong>
+                            {{ item.quantity }}
+                        </p>
+
+                        <p>
+                            <strong>Price per item:</strong>
+                            ₹{{ item.price|floatformat:2 }}
+                        </p>
+
+                        <p>
+                            <strong>Subtotal:</strong>
+                            ₹{% widthratio item.price 1 item.quantity %}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <p>No purchased items found for this order.</p>
+
+            {% endfor %}
+
+            <div class="order-total">
+                Total Amount: ₹{{ order.total_amount|floatformat:2 }}
+            </div>
+
+        </div>
+
+
+        <!-- CONTINUE SHOPPING -->
+
+        <div class="success-actions">
+
+            <a href="/" class="continue-shopping-btn">
+                CONTINUE SHOPPING
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+    <h2>HOUSE OF ELEGANCE</h2>
+    <p>Where Elegance Meets Fashion</p>
+</footer>
+
+</body>
+</html>

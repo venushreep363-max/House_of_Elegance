@@ -1,0 +1,103 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | HOUSE OF ELEGANCE</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="logo">HOUSE <span>OF ELEGANCE</span></div>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="{% url 'wishlist' %}">♡ Wishlist</a>
+        <a href="{% url 'cart' %}">🛍 My Bag</a>
+    </div>
+</header>
+
+<section class="collection">
+
+    <h2>MY ORDERS</h2>
+    <p>View and track your previous orders.</p>
+
+    {% if orders %}
+
+        {% for order in orders %}
+
+        <div class="product-card" style="padding: 22px; margin-bottom: 20px;">
+
+            <h3>Order #{{ order.id }}</h3>
+
+            <p>
+                <strong>Order Date:</strong>
+                {{ order.created_at|date:"d M Y, h:i A" }}
+            </p>
+
+            <p><strong>Customer:</strong> {{ order.customer_name }}</p>
+
+            <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
+
+            <p><strong>Order Status:</strong> {{ order.status }}</p>
+
+            <a href="{% url 'track_order' order.id %}" class="continue-shopping-btn">
+                TRACK ORDER
+            </a>
+
+            <h4 style="margin-top: 15px;">Ordered Products</h4>
+
+            {% for item in order.items.all %}
+
+                <div style="margin: 12px 0; padding: 12px; border-bottom: 1px solid #ddd;">
+
+                    <p><strong>{{ item.product.name }}</strong></p>
+
+                    {% if item.variant %}
+                        {% if item.variant.color %}
+                            <p>Colour: {{ item.variant.color }}</p>
+                        {% endif %}
+
+                        {% if item.variant.size %}
+                            <p>Size: {{ item.variant.size }}</p>
+                        {% endif %}
+                    {% endif %}
+
+                    <p>Quantity: {{ item.quantity }}</p>
+
+                    <p>Price: ₹{{ item.price }}</p>
+
+                    <p>Subtotal: ₹{{ item.price|floatformat:2|add:"0" }}</p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <h3>You haven't placed any orders yet.</h3>
+        <p>Start shopping and discover something beautiful!</p>
+
+        <a href="/" class="continue-shopping-btn">
+            START SHOPPING
+        </a>
+
+    {% endif %}
+
+</section>
+
+<footer>
+    <h2>HOUSE OF ELEGANCE</h2>
+    <p>Where Elegance Meets Fashion</p>
+</footer>
+
+</body>
+</html>

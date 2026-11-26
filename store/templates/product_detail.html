@@ -1,0 +1,343 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ product.name }} | HOUSE OF ELEGANCE</title>
+
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+
+    <style>
+        .variant-section {
+            margin: 22px 0;
+        }
+
+        .variant-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .color-option {
+            padding: 10px 18px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .color-option:hover,
+        .color-option.active {
+            border: 2px solid #222;
+            background: #f3e8df;
+        }
+
+        .variant-stock {
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .out-stock {
+            color: red;
+        }
+
+        .in-stock {
+            color: green;
+        }
+
+        #mainProductImage {
+            transition: filter 0.4s ease;
+        }
+
+        /* CUSTOMER REVIEWS */
+
+        .reviews-section {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 25px;
+        }
+
+        .reviews-section h2 {
+            font-size: 26px;
+            margin-bottom: 25px;
+        }
+
+        .rating-summary {
+            margin-bottom: 25px;
+        }
+
+        .rating-summary h3 {
+            color: #c49a35;
+            font-size: 28px;
+        }
+
+        .review-card {
+            border-bottom: 1px solid #ddd;
+            padding: 20px 0;
+        }
+
+        .review-stars {
+            color: #d6a629;
+            font-size: 20px;
+        }
+
+        .review-card small {
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="logo">HOUSE <span>OF ELEGANCE</span></div>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="{% url 'cart' %}">🛍 Bag</a>
+    </div>
+</header>
+
+<main class="product-details">
+
+    <div class="detail-image">
+        {% if product.image %}
+            <img id="mainProductImage"
+                 src="{{ product.image.url }}"
+                 alt="{{ product.name }}">
+        {% else %}
+            <p>Image coming soon</p>
+        {% endif %}
+    </div>
+
+    <div class="detail-info">
+
+        <p class="detail-category">{{ product.category }}</p>
+
+        <h1>{{ product.name }}</h1>
+
+        <h2>₹{{ product.price }}</h2>
+
+        <p class="product-description">
+            {{ product.description|default:"Beautiful fashion, designed for elegance and comfort." }}
+        </p>
+
+        <form action="{% url 'add_cart' product.id %}" method="POST">
+            {% csrf_token %}
+
+            {% if product.variants.all %}
+
+                <div class="variant-section">
+
+                    <h3>Select Colour / Size</h3>
+
+                    <div class="variant-buttons">
+
+                        {% for variant in product.variants.all %}
+
+                            <button
+                                type="button"
+                                class="color-option"
+                                data-id="{{ variant.id }}"
+                                data-image="{% if variant.image %}{{ variant.image.url }}{% endif %}"
+                                data-stock="{{ variant.stock }}"
+                                data-color="{{ variant.color }}"
+                                data-size="{{ variant.size }}"
+                                onclick="selectVariant(this)">
+
+                                {{ variant.color }}
+
+                                {% if variant.size %}
+                                    - {{ variant.size }}
+                                {% endif %}
+
+                            </button>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <input type="hidden"
+                           name="variant_id"
+                           id="selectedVariant"
+                           value="">
+
+                    <p id="variantStock" class="variant-stock">
+                        Please select a colour.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+            <p class="product-availability">
+                <strong>Availability:</strong>
+
+                {% if product.stock > 0 %}
+                    <span class="in-stock">In Stock</span>
+                {% else %}
+                    <span class="out-stock">Out of Stock</span>
+                {% endif %}
+            </p>
+
+            <button class="add-btn"
+                    type="submit"
+                    id="addToBagButton"
+                    {% if product.stock <= 0 %}disabled{% endif %}>
+                ADD TO BAG
+            </button>
+
+        </form>
+
+        <a class="continue-shopping" href="/">
+            ← CONTINUE SHOPPING
+        </a>
+
+    </div>
+
+</main>
+
+
+<!-- CUSTOMER REVIEWS SECTION -->
+
+<section class="reviews-section">
+
+    <h2>Customer Reviews & Ratings</h2>
+
+    <div class="rating-summary">
+
+        <h3>{{ average_rating }} / 5 ⭐</h3>
+
+        <p>{{ review_count }} customer reviews</p>
+
+    </div>
+
+    {% if reviews %}
+
+        {% for review in reviews %}
+
+            <div class="review-card">
+
+                <h4>{{ review.customer.username }}</h4>
+
+                <p class="review-stars">
+
+                    {% for star in "12345" %}
+
+                        {% if forloop.counter <= review.rating %}
+                            ⭐
+                        {% else %}
+                            ☆
+                        {% endif %}
+
+                    {% endfor %}
+
+                </p>
+
+                <p>{{ review.comment }}</p>
+
+                <small>
+                    {{ review.created_at|date:"d M Y" }}
+                </small>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No reviews yet. Be the first to review this product!</p>
+
+    {% endif %}
+
+</section>
+
+
+<footer>
+    <h2>HOUSE OF ELEGANCE</h2>
+    <p>Where Elegance Meets Fashion</p>
+</footer>
+
+
+<script>
+
+function selectVariant(button) {
+
+    const buttons = document.querySelectorAll('.color-option');
+
+    buttons.forEach(function(item) {
+        item.classList.remove('active');
+    });
+
+    button.classList.add('active');
+
+    const variantId = button.dataset.id;
+    const color = button.getAttribute('data-color').toLowerCase().trim();
+
+    console.log("Selected colour:", color);
+
+    const image = button.dataset.image;
+    const stock = parseInt(button.dataset.stock);
+
+    document.getElementById('selectedVariant').value = variantId;
+
+    const mainImage = document.getElementById('mainProductImage');
+
+    if (mainImage) {
+
+        if (image) {
+            mainImage.src = image;
+            mainImage.style.filter = 'none';
+        }
+
+        else {
+
+            const filters = {
+                'red': 'sepia(1) saturate(7) hue-rotate(320deg)',
+                'black': 'grayscale(1) brightness(0.45)',
+                'pink': 'sepia(0.5) saturate(4) hue-rotate(290deg) brightness(1.1)',
+                'blue': 'grayscale(0.5) sepia(1) saturate(5) hue-rotate(175deg)',
+                'green': 'grayscale(0.5) sepia(1) saturate(5) hue-rotate(65deg)'
+            };
+
+            mainImage.style.filter = filters[color] || 'none';
+        }
+    }
+
+    const stockMessage = document.getElementById('variantStock');
+    const addButton = document.getElementById('addToBagButton');
+
+    if (stock > 0) {
+
+        stockMessage.innerHTML = 'In Stock (' + stock + ' available)';
+        stockMessage.className = 'variant-stock in-stock';
+        addButton.disabled = false;
+
+    } else {
+
+        stockMessage.innerHTML = 'This colour is out of stock';
+        stockMessage.className = 'variant-stock out-stock';
+        addButton.disabled = true;
+
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    const firstVariant = document.querySelector('.color-option');
+
+    if (firstVariant) {
+        selectVariant(firstVariant);
+    }
+
+});
+
+</script>
+
+</body>
+</html>

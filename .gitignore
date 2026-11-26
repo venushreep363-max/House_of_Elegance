@@ -1,0 +1,16 @@
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.config/
+
+# Secret environment file
+.env
+
+# Local database
+db.sqlite3
+
+# Django collected static files
+staticfiles/

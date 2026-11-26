@@ -1,0 +1,341 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order | HOUSE OF ELEGANCE</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+
+    <style>
+        .tracking-container {
+            max-width: 850px;
+            margin: 45px auto;
+            padding: 35px;
+            background: #fff;
+            border: 1px solid #f0dce2;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(90, 30, 50, 0.08);
+            text-align: center;
+        }
+
+        .tracking-container h2 {
+            color: #632139;
+            margin-bottom: 20px;
+        }
+
+        .tracking-info {
+            color: #705b63;
+            line-height: 1.9;
+            margin-bottom: 30px;
+        }
+
+        .tracking-timeline {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin: 45px 0;
+        }
+
+        .tracking-step {
+            width: 22%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tracking-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #eee;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 20px;
+            border: 3px solid #ddd;
+        }
+
+        .tracking-step.completed .tracking-circle {
+            background: #852747;
+            color: white;
+            border-color: #852747;
+        }
+
+        .tracking-step.active .tracking-circle {
+            background: #fff;
+            color: #852747;
+            border: 3px solid #852747;
+            box-shadow: 0 0 0 5px #f7e9ee;
+        }
+
+        .tracking-step h4 {
+            font-size: 14px;
+            color: #632139;
+            margin: 5px 0;
+        }
+
+        .tracking-step p {
+            font-size: 12px;
+            font-weight: bold;
+            color: #852747;
+            margin: 5px 0;
+        }
+
+        .tracking-step small {
+            display: block;
+            font-size: 11px;
+            color: #99868c;
+            line-height: 1.5;
+            margin-top: 6px;
+        }
+
+        .tracking-line {
+            height: 4px;
+            background: #ddd;
+            flex: 1;
+            margin-top: 22px;
+        }
+
+        .tracking-line.completed {
+            background: #852747;
+        }
+
+        .status-message {
+            padding: 18px;
+            margin: 25px 0;
+            background: #fff7f9;
+            border: 1px solid #f0dce2;
+            border-radius: 10px;
+            color: #632139;
+        }
+
+        .cancelled-message {
+            background: #fff1f1;
+            border: 1px solid #e8baba;
+            color: #a12626;
+        }
+
+        .continue-shopping-btn {
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .tracking-container {
+                margin: 20px 12px;
+                padding: 20px 10px;
+            }
+
+            .tracking-circle {
+                width: 36px;
+                height: 36px;
+                font-size: 15px;
+            }
+
+            .tracking-step h4 {
+                font-size: 10px;
+            }
+
+            .tracking-step p {
+                font-size: 9px;
+            }
+
+            .tracking-step small {
+                font-size: 9px;
+            }
+
+            .tracking-line {
+                margin-top: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="logo">HOUSE <span>OF ELEGANCE</span></div>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="{% url 'my_orders' %}">📦 My Orders</a>
+        <a href="{% url 'cart' %}">🛍 My Bag</a>
+    </div>
+</header>
+
+<section class="collection">
+
+    <div class="tracking-container">
+
+        <h2>TRACK YOUR ORDER</h2>
+
+        <div class="tracking-info">
+            <p><strong>Order Number:</strong> #{{ order.id }}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"d M Y" }}</p>
+            <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
+        </div>
+
+        {% if order.status == 'Cancelled' %}
+
+            <div class="status-message cancelled-message">
+                <h2>✕ Order Cancelled</h2>
+                <p>This order has been cancelled.</p>
+            </div>
+
+        {% else %}
+
+            <h3>Delivery Progress</h3>
+
+            <div class="tracking-timeline">
+
+                <!-- ORDER PLACED -->
+                <div class="tracking-step completed">
+                    <div class="tracking-circle">✓</div>
+                    <h4>Order Placed</h4>
+                    <p>Completed</p>
+                    <small>Your order has been received.</small>
+                </div>
+
+                <div class="tracking-line
+                    {% if order.status == 'Confirmed' or order.status == 'Shipped' or order.status == 'Delivered' %}
+                        completed
+                    {% endif %}">
+                </div>
+
+                <!-- CONFIRMED -->
+                <div class="tracking-step
+                    {% if order.status == 'Confirmed' %}active
+                    {% elif order.status == 'Shipped' or order.status == 'Delivered' %}completed
+                    {% endif %}">
+
+                    <div class="tracking-circle">
+                        {% if order.status == 'Confirmed' or order.status == 'Shipped' or order.status == 'Delivered' %}
+                            ✓
+                        {% else %}
+                            2
+                        {% endif %}
+                    </div>
+
+                    <h4>Confirmed</h4>
+
+                    <p>
+                        {% if order.status == 'Pending' %}
+                            Upcoming
+                        {% else %}
+                            Completed
+                        {% endif %}
+                    </p>
+
+                    <small>Your order is confirmed.</small>
+                </div>
+
+                <div class="tracking-line
+                    {% if order.status == 'Shipped' or order.status == 'Delivered' %}
+                        completed
+                    {% endif %}">
+                </div>
+
+                <!-- SHIPPED -->
+                <div class="tracking-step
+                    {% if order.status == 'Shipped' %}active
+                    {% elif order.status == 'Delivered' %}completed
+                    {% endif %}">
+
+                    <div class="tracking-circle">
+                        {% if order.status == 'Delivered' %}
+                            ✓
+                        {% else %}
+                            3
+                        {% endif %}
+                    </div>
+
+                    <h4>Shipped</h4>
+
+                    <p>
+                        {% if order.status == 'Shipped' %}
+                            In Progress
+                        {% elif order.status == 'Delivered' %}
+                            Completed
+                        {% else %}
+                            Upcoming
+                        {% endif %}
+                    </p>
+
+                    <small>Your package is on its way.</small>
+                </div>
+
+                <div class="tracking-line
+                    {% if order.status == 'Delivered' %}
+                        completed
+                    {% endif %}">
+                </div>
+
+                <!-- DELIVERED -->
+                <div class="tracking-step
+                    {% if order.status == 'Delivered' %}completed{% endif %}">
+
+                    <div class="tracking-circle">
+                        {% if order.status == 'Delivered' %}
+                            ✓
+                        {% else %}
+                            4
+                        {% endif %}
+                    </div>
+
+                    <h4>Delivered</h4>
+
+                    <p>
+                        {% if order.status == 'Delivered' %}
+                            Completed
+                        {% else %}
+                            Upcoming
+                        {% endif %}
+                    </p>
+
+                    <small>Your order will be delivered soon.</small>
+                </div>
+
+            </div>
+
+            <!-- CURRENT ORDER STATUS -->
+            <div class="status-message">
+
+                {% if order.status == 'Pending' %}
+                    <h3>⏳ Order Pending</h3>
+                    <p>Your order has been received and is waiting for confirmation.</p>
+
+                {% elif order.status == 'Confirmed' %}
+                    <h3>✓ Order Confirmed</h3>
+                    <p>Your order has been confirmed successfully.</p>
+
+                {% elif order.status == 'Shipped' %}
+                    <h3>🚚 Order Shipped</h3>
+                    <p>Your package is on its way!</p>
+
+                {% elif order.status == 'Delivered' %}
+                    <h3>🎉 Order Delivered</h3>
+                    <p>Your order has been delivered successfully. Thank you for shopping with us!</p>
+                {% endif %}
+
+            </div>
+
+        {% endif %}
+
+        <a href="{% url 'my_orders' %}" class="continue-shopping-btn">
+            BACK TO MY ORDERS
+        </a>
+
+    </div>
+
+</section>
+
+<footer>
+    <h2>HOUSE OF ELEGANCE</h2>
+    <p>Where Elegance Meets Fashion</p>
+</footer>
+
+</body>
+</html>

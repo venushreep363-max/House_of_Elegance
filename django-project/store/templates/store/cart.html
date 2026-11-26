@@ -1,0 +1,128 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Shopping Bag | HOUSE OF ELEGANCE</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="logo">HOUSE <span>OF ELEGANCE</span></div>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="{% url 'wishlist' %}">♡ Wishlist</a>
+        <a href="{% url 'cart' %}">🛍 My Bag</a>
+    </div>
+</header>
+
+<section class="collection">
+
+    <h2>MY SHOPPING BAG</h2>
+    <p>Your favourite fashion, all in one place.</p>
+
+    {% if cart_items %}
+
+        {% for item in cart_items %}
+
+        <div class="product-card">
+
+            {% if item.variant and item.variant.image %}
+                <img src="{{ item.variant.image.url }}"
+                     alt="{{ item.product.name }}"
+                     width="150">
+            {% elif item.product.image %}
+                <img src="{{ item.product.image.url }}"
+                     alt="{{ item.product.name }}"
+                     width="150">
+            {% endif %}
+
+            <div class="product-info">
+
+                <h3>{{ item.product.name }}</h3>
+
+                <p>{{ item.product.category }}</p>
+
+                {% if item.variant %}
+                    {% if item.variant.color %}
+                        <p>Colour: {{ item.variant.color }}</p>
+                    {% endif %}
+
+                    {% if item.variant.size %}
+                        <p>Size: {{ item.variant.size }}</p>
+                    {% endif %}
+                {% endif %}
+
+                <p>Price: ₹{{ item.product.price }}</p>
+
+                <div class="quantity-controls">
+
+                    <form method="POST"
+                          action="{% url 'update_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="cart_key" value="{{ item.cart_key }}">
+                        <input type="hidden" name="action" value="decrease">
+                        <button type="submit">−</button>
+                    </form>
+
+                    <span>{{ item.quantity }}</span>
+
+                    <form method="POST"
+                          action="{% url 'update_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="cart_key" value="{{ item.cart_key }}">
+                        <input type="hidden" name="action" value="increase">
+                        <button type="submit">+</button>
+                    </form>
+
+                </div>
+
+                <strong>Subtotal: ₹{{ item.subtotal }}</strong>
+
+                <form method="POST"
+                      action="{% url 'remove_cart_item' item.product.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="cart_key" value="{{ item.cart_key }}">
+                    <button type="submit" class="remove-btn">
+                        REMOVE
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        <h2 class="cart-total">Total: ₹{{ total }}</h2>
+
+        <a href="{% url 'checkout' %}" class="add-btn">
+            PLACE ORDER
+        </a>
+
+        <br><br>
+
+        <a href="/" class="continue-shopping-btn">CONTINUE SHOPPING</a>
+
+    {% else %}
+
+        <h3>Your shopping bag is empty!</h3>
+        <p>Discover something beautiful today.</p>
+        <a href="/" class="continue-shopping-btn">CONTINUE SHOPPING</a>
+
+    {% endif %}
+
+</section>
+
+<footer>
+    <h2>HOUSE OF ELEGANCE</h2>
+    <p>Where Elegance Meets Fashion</p>
+</footer>
+
+</body>
+</html>

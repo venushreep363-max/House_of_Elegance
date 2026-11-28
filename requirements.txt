@@ -1,5 +1,5 @@
-Django
+Django==6.1.2
 gunicorn
 whitenoise
-python-dotenv
-Pillow
+python-dotenv==1.2.4
+Pillow==12.3.0

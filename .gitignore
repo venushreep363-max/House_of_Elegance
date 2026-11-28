@@ -17,3 +17,14 @@ staticfiles/
 db_before_restore_backup.sqlite3
 .serverlog
 serverlog.txt
+# Database backups and customer data
+db_before_neon_migration.sqlite3
+store_backup.json
+*.sqlite3
+
+# Old environment backup
+env_backup/
+
+# Environment and log files
+.env.*
+*.log
